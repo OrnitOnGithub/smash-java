@@ -1,0 +1,5 @@
+- [x] Use the four buttons to pick cards (keep a static int somewhere)
+- [x] On click, place chosen card at mouse pos
+- [x] Add card to cards list
+- [x] In a while loop, clear panel and display all cards in card list
+- [ ] Do card attack logic
