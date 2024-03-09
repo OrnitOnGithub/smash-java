@@ -9,15 +9,8 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.*;
-
-//  AAAA SSSS SSSS
-//  A  A S    S  
-//  AAAA SSSS SSSS
-//  A  A    S    S
-//  A  A SSSS SSSS
 
 public class Client {
 
@@ -120,11 +113,7 @@ public class Client {
              ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream())) {
     
             // Receive the `Card` object from the server
-            ArrayList<Card> receivedCardList = (ArrayList<Card>) objectInputStream.readObject();
-    
-            // Process the received Card object
-            System.out.println("Received Card list from server");
-            cards = receivedCardList;
+            cards = (ArrayList<Card>) objectInputStream.readObject();
     
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception (log, print, or rethrow)
@@ -154,6 +143,7 @@ public class Client {
                 int y = e.getY();
                 System.out.println("Mouse clicked at: " + x + ", " + y);
                 Card newCard = new Card(selectedCard, x, y);
+                System.out.println(newCard.name);
 
                 // cardsToRender.add(newCard); // Instead, send this to server
 
@@ -198,6 +188,9 @@ public class Client {
 
         // Set BorderLayout for the frame
         frame.setLayout(new BorderLayout());
+
+        frame.setResizable(false);
+
         // Add the panel to the center of the frame
         frame.add(gamePanel, BorderLayout.CENTER);
 
@@ -206,7 +199,6 @@ public class Client {
         buttonPanel.add(button2);
         buttonPanel.add(button3);
         buttonPanel.add(button4);
-
 
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -223,7 +215,7 @@ public class Client {
                 Duration duration = Duration.between(timeAtFrameStart, timeAtFrameEnd);
                 double deltaTime = duration.toNanos() / 1_000_000_000.0;
 
-                System.out.println(deltaTime);
+                //System.out.println(deltaTime);
                 /*
                 int speed = 20;
                 for (Card card : cardsToRender) {

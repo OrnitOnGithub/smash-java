@@ -12,6 +12,8 @@ import java.util.ArrayList;
 public class Server {
 
     static ArrayList<Card> cardList = new ArrayList<Card>();
+    static ArrayList<InetAddress> redPlayers = new ArrayList<InetAddress>();
+    static ArrayList<InetAddress> bluePlayers = new ArrayList<InetAddress>();
 
     public static void main(String[] args) {
         System.out.println("Server starting...");
@@ -30,14 +32,27 @@ public class Server {
                         InetAddress clientAddress = receivePacket.getAddress();
                         int clientPort = receivePacket.getPort();
         
-                        System.out.println("Received ping request from " + clientAddress.getHostAddress() + ":" + clientPort);
+                        System.out.println("Received ping request from: " + clientAddress.getHostAddress() + ":" + clientPort);
         
                         // Respond to the ping
                         byte[] responseData = "Pong".getBytes();
                         DatagramPacket sendPacket = new DatagramPacket(responseData, responseData.length, clientAddress, clientPort);
                         socket.send(sendPacket);
         
-                        System.out.println("Sent pong response to " + clientAddress.getHostAddress() + ":" + clientPort);
+                        System.out.println("Sent pong response to:      "
+                            + clientAddress.getHostAddress()
+                            + ":" + clientPort
+                        );
+
+                        if (redPlayers.size() < bluePlayers.size()) {
+                            redPlayers.add(clientAddress);
+                        }
+                        else {
+                            bluePlayers.add(clientAddress);
+                        }
+
+                        System.out.println(bluePlayers.get(0));
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -52,11 +67,25 @@ public class Server {
                     System.out.println("Thread 2 is running. Waiting to recieve cards...");
                     while (true) {
                         Socket clientSocket = serverSocket.accept();
+                        InetAddress playerAddress = serverSocket.getInetAddress();
                         ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
 
                         // Receive the `Card` object from the client
                         Card recievedCard = (Card) objectInputStream.readObject();
-                        cardList.add(recievedCard);
+
+                        boolean redContainsAddress = false;
+                        for (InetAddress address : redPlayers) {
+                            if (address.equals(playerAddress)) {
+                                redContainsAddress = true;
+                                break;
+                            }
+                        }
+                        if (redContainsAddress && (recievedCard.posY > Client.windowHeight/2)) {
+                            cardList.add(recievedCard);
+                        }
+                        if (!redContainsAddress && !(recievedCard.posY > Client.windowHeight/2)) {
+                            cardList.add(recievedCard);
+                        }
 
                         // Process the received Card object
                         System.out.println("Received Card object from client:");
@@ -91,9 +120,27 @@ public class Server {
             }
         });
 
+        // Startup
+
+        // Set up the king towers
+        Card kingTowerBlue = new Card("King tower", Client.windowWidth/2, 50);
+        kingTowerBlue.fromRedTeam = false;
+        Card kingTowerRed = new Card("King tower", Client.windowWidth/2, Client.windowHeight-100);
+        kingTowerRed.fromRedTeam = true;
+        cardList.add(kingTowerBlue);
+        cardList.add(kingTowerRed);
+
+
         pingThead.start();
         recieveCardThread.start();
         returnCardListThread.start();
+
+        while (true) {
+            for (Card card : cardList) {
+                ;
+            }
+        }
+
     }
 }
 

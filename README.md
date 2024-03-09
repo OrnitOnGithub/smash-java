@@ -1,6 +1,6 @@
 New TODO
-- [ ] Server appends recieved cards to cardlist
-- [ ] Client can request cardlist from server
+- [x] Server appends recieved cards to cardlist
+- [x] Client can request cardlist from server
 - [ ] Server does logic with cardlist
 - [ ] Add teams
 - [ ] Add king towers (They can totally just be `Card`s as well)
