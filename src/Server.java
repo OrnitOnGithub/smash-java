@@ -46,9 +46,11 @@ public class Server {
 
                         if (redPlayers.size() < bluePlayers.size()) {
                             redPlayers.add(clientAddress);
+                            System.out.println("Added " + clientAddress + " To red players");
                         }
                         else {
                             bluePlayers.add(clientAddress);
+                            System.out.println("Added " + clientAddress + " To blue players");
                         }
 
                         System.out.println(bluePlayers.get(0));
@@ -67,7 +69,7 @@ public class Server {
                     System.out.println("Thread 2 is running. Waiting to recieve cards...");
                     while (true) {
                         Socket clientSocket = serverSocket.accept();
-                        InetAddress playerAddress = serverSocket.getInetAddress();
+                        InetAddress playerAddress = clientSocket.getInetAddress();
                         ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
 
                         // Receive the `Card` object from the client
@@ -80,16 +82,17 @@ public class Server {
                                 break;
                             }
                         }
-                        if (redContainsAddress && (recievedCard.posY > Client.windowHeight/2)) {
+                        if (redContainsAddress && (recievedCard.posY < Client.windowHeight/2)) {
                             cardList.add(recievedCard);
                         }
-                        if (!redContainsAddress && !(recievedCard.posY > Client.windowHeight/2)) {
+                        if (!(redContainsAddress) && (recievedCard.posY > Client.windowHeight/2)) {
                             cardList.add(recievedCard);
                         }
 
                         // Process the received Card object
                         System.out.println("Received Card object from client:");
                         System.out.println("Card Name: " + recievedCard.name);
+                        System.out.println("From team red?" + redContainsAddress);
                     }            
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -136,9 +139,9 @@ public class Server {
         returnCardListThread.start();
 
         while (true) {
-            for (Card card : cardList) {
-                ;
-            }
+            // for (Card card : cardList) {
+            //     ;
+            // }
         }
 
     }
