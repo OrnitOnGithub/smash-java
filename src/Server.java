@@ -82,10 +82,12 @@ public class Server {
                                 break;
                             }
                         }
-                        if (redContainsAddress && (recievedCard.posY < Client.windowHeight/2)) {
+                        if (redContainsAddress && (recievedCard.posY > Client.windowHeight/2)) {
+                            recievedCard.fromRedTeam = true;
                             cardList.add(recievedCard);
                         }
-                        if (!(redContainsAddress) && (recievedCard.posY > Client.windowHeight/2)) {
+                        if (!(redContainsAddress) && (recievedCard.posY < Client.windowHeight/2)) {
+                            recievedCard.fromRedTeam = false;
                             cardList.add(recievedCard);
                         }
 
