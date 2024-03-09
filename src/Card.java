@@ -1,16 +1,16 @@
 import java.awt.*;
+import java.io.Serializable;
 /**
  * class for basic card.
  */
-public class Card {
+public class Card implements Serializable {
 
     String name;
-    double posX;
-    double posY;
-
+    float posX;
+    float posY;
     byte health;
 
-    public Card(String name, double posX, double posY) {
+    public Card(String name, float posX, float posY) {
         this.name = name;
         this.posX = posX;
         this.posY = posY;
@@ -20,6 +20,7 @@ public class Card {
     public void drawCard(Graphics g) {
         int width = 50;
         int height = 50;
+        Color healthBarColor = new Color(255, 0 ,0);
         Color color = Color.BLACK;
         if (this.name == Client.card2Name) {
             color = Color.GREEN;
@@ -30,10 +31,9 @@ public class Card {
         if (this.name == Client.card4Name) {
             color = new Color(128, 0, 255);
         }
-    
         g.setColor(color);
         g.fillRect((int)posX, (int)posY, width, height);
+        g.setColor(healthBarColor);
+        g.fillRect((int)posX, (int)posY-20, this.health/2, 10);
     }
-
-
 }
