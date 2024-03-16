@@ -23,7 +23,7 @@ public class Client {
 
   static ArrayList<Player> playerList = new ArrayList<Player>();  // List of players (Returned by server, drawn by client)
 
-  public static void main() {
+  public static void main(String[] args) {
 
     // Set up a menu for entering the server's IP.
     JFrame ipEntryFrame = new JFrame("IP Entry Menu");
