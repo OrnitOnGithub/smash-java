@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ornit</groupId>
-    <artifactId>java-royale</artifactId>
+    <artifactId>smash-java</artifactId>
     <version>0.0.0</version>
 
     <properties>
