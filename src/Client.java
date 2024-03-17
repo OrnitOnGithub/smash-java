@@ -31,6 +31,7 @@ public class Client {
     ipEntryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     ipEntryFrame.setLayout(new BorderLayout());
     JTextField ipField = new JTextField();
+    ipField.setText("localhost"); //sets localhost as default, easier for testing
     JButton connectButton = new JButton("Connect");
     ipEntryFrame.add(ipField, BorderLayout.CENTER);
     ipEntryFrame.add(connectButton, BorderLayout.SOUTH);
@@ -104,7 +105,7 @@ public class Client {
    */
   static void game() {
 
-    JFrame frame = new JFrame("Hi");
+    JFrame frame = new JFrame("smash of the hog rida ");
 
     // No idea how this works, but it paints everything in playerList using
     // the Player class' drawPlayer() function.
@@ -127,6 +128,46 @@ public class Client {
     frame.setSize(windowWidth, windowHeight);
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
+    gamePanel.requestFocusInWindow();
+
+    float initialX = windowWidth / 2; 
+    float initialY = 200; // initial player positions
+
+    Player player = new Player(initialX, initialY);
+    playerList.add(player); // Add the player to the player list
+
+
+    /*
+     * The listeners check if a certain key or mouse button is pressed, and if it is released
+     */
+    gamePanel.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        System.out.println("Key pressed: " + e.getKeyCode()); // Debug print, leave it for now, 65 is A and 68 is D i guess
+        if (e.getKeyCode() == KeyEvent.VK_A) {
+          playerList.get(0).setDirection(Player.Direction.LEFT); // Set direction to left
+        } else if (e.getKeyCode() == KeyEvent.VK_D) {
+          playerList.get(0).setDirection(Player.Direction.RIGHT); // Set direction to right
+        }
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+        System.out.println("Key released: " + e.getKeyCode()); // Debug print, leave it for now
+        if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
+          playerList.get(0).setDirection(Player.Direction.NONE); // Stop moving
+        }
+      }
+    });
+
+    gamePanel.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+          if (e.getButton() == MouseEvent.BUTTON1) {
+              playerList.get(0).attack(); // Assuming the local player (for now), at position 0 in the player list is going to attack
+          }
+      }
+  });
 
     // MAIN GAME LOOP
     Timer timer = new Timer(33, new ActionListener() { // roughly 30fps
@@ -135,12 +176,17 @@ public class Client {
       public void actionPerformed(ActionEvent e) {
         LocalTime timeAtFrameStart = LocalTime.now();
         Duration duration = Duration.between(timeAtFrameStart, timeAtFrameEnd);
-        double deltaTime = duration.toNanos() / 1_000_000_000.0;
-
+        double deltaTime = (-1 * duration.toNanos()) / 1_000_000_000.0; // to make deltatime positive and not fuck up everything else
+        System.out.println("Delta time: " + deltaTime); // Debug print, leave it for now
         // deltaTime = time between frames
 
         timeAtFrameEnd = LocalTime.now();
         gamePanel.repaint(); // Repaint the panel to update the visuals
+
+        for (Player player : playerList) {
+          player.updateColor(); // Update the player's color based on the attack state
+          player.updatePosition(deltaTime);
+        }
       }
     });
     timer.start();

@@ -28,4 +28,4 @@ Otherwise you can just run the JARs or use the VSCODE play button.
 - The server then returns the new game state. (does all calculations, including movements and attacks)
 - The client renders it.
 ### Idea 2
-- Server only synchronises a few things, nearly all game logic is handled by clients.
+- Server only synchronises a few things, nearly all game logic is handled by clients. (less things to synchronise?, more performant if internet is terible)
